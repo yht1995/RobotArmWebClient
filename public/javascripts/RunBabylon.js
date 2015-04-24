@@ -16,7 +16,7 @@ function startBabylonJS() {
         scene = new BABYLON.Scene(engine);
 
         //Adding a light
-        var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 50, 50), scene);
+        var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 100, 50), scene);
 
         //Adding an Arc Rotate Camera
         var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, BABYLON.Vector3.Zero(), scene);
@@ -31,7 +31,7 @@ function startBabylonJS() {
 
         var ground = BABYLON.Mesh.CreateGround("ground", 1000, 1000, 32, scene);
         var materialground = new BABYLON.StandardMaterial("ground", scene);
-        materialground.diffuseTexture = new BABYLON.Texture("textures/ground.jpg", scene);
+        materialground.diffuseTexture = new BABYLON.Texture("/images/textures/ground.jpg", scene);
         materialground.diffuseTexture.uScale = 10;//Repeat 5 times on the Vertical Axes
         materialground.diffuseTexture.vScale = 10;//Repeat 5 times on the Horizontal Axes
         materialground.backFaceCulling = false;//Allways show the front and the back of an element
@@ -65,7 +65,7 @@ function startBabylonJS() {
         var skybox = BABYLON.Mesh.CreateBox("wall", 500.0, scene);
         var skyboxMaterial = new BABYLON.StandardMaterial("wall", scene);
         skyboxMaterial.backFaceCulling = false;
-        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/wall", scene);
+        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("/images/textures/wall", scene);
         skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
         skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
         skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
