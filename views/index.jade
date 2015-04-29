@@ -1,10 +1,27 @@
 doctype html
 html
-  head
-    title RobotArmWebClient
-    link(href='/stylesheets/babylon.css', rel='stylesheet')
-    script(src='/javascripts/babylon.js')
-    script(src='/javascripts/RunBabylon.js')
-
-  body
-    canvas#renderCanvas
+    head
+        title RobotArmWebClient
+        link(href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', rel='stylesheet')
+        link(href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css', rel='stylesheet')
+        link(href='/stylesheets/babylon.css', rel='stylesheet')
+        link(href='/stylesheets/simple-slider.css', rel='stylesheet')
+        script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
+        script(src='/javascripts/hand-1.3.8.js')
+        script(src='/javascripts/babylon.js')
+        script(src='/javascripts/simple-slider.min.js')
+        script(src='/javascripts/RunBabylon.js')
+    body
+        canvas#renderCanvas
+        div#panel.panel.panel-default
+            div.panel-heading Control
+            ul.list-group
+                li.list-group-item
+                    input#rangeLA(type='text',data-slider='true',data-slider-range='0,360')
+                li.list-group-item
+                    input#rangeLC(type='text',data-slider='true',data-slider-range='-70,70')
+                li.list-group-item
+                    input#rangeHA(type='text',data-slider='true',data-slider-range='-70,70')
+                li.list-group-item
+                    input#rangeHC(type='text',data-slider='true',data-slider-range='0,360')

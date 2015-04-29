@@ -1,14 +1,17 @@
-﻿/// <reference path="~/scripts/babylon.js" />
-
-"use strict";
+﻿"use strict";
 
 var canvas;
 var engine;
 var scene;
+var armH;
+var sphereH;
+var armL;
+var sphereL;
+
 document.addEventListener("DOMContentLoaded", startBabylonJS, false);
 
-
 function startBabylonJS() {
+
     if (BABYLON.Engine.isSupported()) {
         canvas = document.getElementById("renderCanvas");
         engine = new BABYLON.Engine(canvas, true);
@@ -16,7 +19,10 @@ function startBabylonJS() {
         scene = new BABYLON.Scene(engine);
 
         //Adding a light
-        var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 100, 50), scene);
+        var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -1, -1), scene);
+        light.position = new BABYLON.Vector3(20, 40, 20);
+        light.intensity = 1;
+
 
         //Adding an Arc Rotate Camera
         var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, BABYLON.Vector3.Zero(), scene);
@@ -42,27 +48,32 @@ function startBabylonJS() {
         var base = BABYLON.Mesh.CreateCylinder("base", baseHeight, 10, 10, tessellation, scene);
         base.parent = ground;
         base.position = new BABYLON.Vector3(0, baseHeight / 2, 0);
+        base.checkCollisions = true;
 
-        var sphereL = BABYLON.Mesh.CreateSphere("sphereL", tessellation, sphereDiam, scene);
+        sphereL = BABYLON.Mesh.CreateSphere("sphereL", tessellation, sphereDiam, scene);
         sphereL.parent = base;
         sphereL.position = new BABYLON.Vector3(0, (baseHeight + sphereDiam) / 2, 0);
         sphereL.rotation.x = Math.PI / 4;
+        sphereL.checkCollisions = true;
 
-        var armL = BABYLON.Mesh.CreateCylinder("armL", armLLength, sphereDiam, sphereDiam, tessellation, scene);
+        armL = BABYLON.Mesh.CreateCylinder("armL", armLLength, sphereDiam, sphereDiam, tessellation, scene);
         armL.parent = sphereL;
         armL.position = new BABYLON.Vector3(0, (sphereDiam + armLLength) / 2, 0);
+        armL.checkCollisions = true;
 
-        var sphereH = BABYLON.Mesh.CreateSphere("sphereH", tessellation, sphereDiam, scene);
+        sphereH = BABYLON.Mesh.CreateSphere("sphereH", tessellation, sphereDiam, scene);
         sphereH.parent = armL;
         sphereH.position = new BABYLON.Vector3(0, (armLLength + sphereDiam) / 2, 0);
         sphereH.rotation.x = Math.PI / 4;
+        sphereH.checkCollisions = true;
 
-        var armH = BABYLON.Mesh.CreateCylinder("armH", armHLength, sphereDiam, sphereDiam, tessellation, scene);
+        armH = BABYLON.Mesh.CreateCylinder("armH", armHLength, sphereDiam, sphereDiam, tessellation, scene);
         armH.parent = sphereH;
         armH.position = new BABYLON.Vector3(0, (sphereDiam + armHLength) / 2, 0);
+        armH.checkCollisions = true;
 
         // Skybox
-        var skybox = BABYLON.Mesh.CreateBox("wall", 500.0, scene);
+        var skybox = BABYLON.Mesh.CreateBox("wall", 300.0, scene);
         var skyboxMaterial = new BABYLON.StandardMaterial("wall", scene);
         skyboxMaterial.backFaceCulling = false;
         skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("/images/textures/wall", scene);
@@ -72,19 +83,41 @@ function startBabylonJS() {
         skybox.material = skyboxMaterial;
         skybox.checkCollisions = true;
 
-        //Move the light with the camera
-//        scene.registerBeforeRender(function() {
-//            light.position = camera.position;
-//        });
+        // Shadows
+        var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+        shadowGenerator.getShadowMap().renderList.push(sphereL);
+        shadowGenerator.getShadowMap().renderList.push(armL);
+        shadowGenerator.getShadowMap().renderList.push(sphereH);
+        shadowGenerator.getShadowMap().renderList.push(armH);
+        shadowGenerator.useVarianceShadowMap = true;
+        ground.receiveShadows = true;
 
         // Once the scene is loaded, just register a render loop to render it
         engine.runRenderLoop(function () {
             scene.render();
         });
-
     }
+    setSlider();
 }
 
-window.addEventListener("resize", function() {
+
+function setSlider() {
+    $("#rangeLA").bind("slider:changed", function (event, data) {
+        sphereL.rotation.y = data.value * Math.PI / 180;
+    });
+    $("#rangeLC").bind("slider:changed", function (event, data) {
+        sphereL.rotation.x = data.value * Math.PI / 180;
+    });
+    $("#rangeLC").simpleSlider("setValue", 45);
+    $("#rangeHA").bind("slider:changed", function (event, data) {
+        sphereH.rotation.x = data.value * Math.PI / 180;
+    });
+    $("#rangeHA").simpleSlider("setValue", 45);
+    $("#rangeHC").bind("slider:changed", function (event, data) {
+        armH.rotation.y = data.value * Math.PI / 180;
+    });
+}
+
+window.addEventListener("resize", function () {
     engine.resize();
 });
