@@ -19,8 +19,8 @@ function startBabylonJS() {
         scene = new BABYLON.Scene(engine);
 
         //Adding a light
-        var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -1, -1), scene);
-        light.position = new BABYLON.Vector3(20, 40, 20);
+        var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -2, -1), scene);
+        light.position = new BABYLON.Vector3(40, 80, 40);
         light.intensity = 1;
 
 
@@ -85,12 +85,14 @@ function startBabylonJS() {
 
         // Shadows
         var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+        shadowGenerator.getShadowMap().renderList.push(base);
         shadowGenerator.getShadowMap().renderList.push(sphereL);
         shadowGenerator.getShadowMap().renderList.push(armL);
         shadowGenerator.getShadowMap().renderList.push(sphereH);
         shadowGenerator.getShadowMap().renderList.push(armH);
         shadowGenerator.useVarianceShadowMap = true;
         ground.receiveShadows = true;
+        skybox.receiveShadows = true;
 
         // Once the scene is loaded, just register a render loop to render it
         engine.runRenderLoop(function () {
